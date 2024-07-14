@@ -1,6 +1,15 @@
 from django.contrib import admin
+from .models import Post, PostImage
 
-from .models import Post
+
+class PostImageInline(admin.TabularInline):
+    model = PostImage
+    extra = 1
 
 
-admin.site.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    inlines = [PostImageInline]
+
+
+admin.site.register(Post, PostAdmin)
+admin.site.register(PostImage)

@@ -29,7 +29,7 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self):
-        return self.email
+        return f"{self.email} - {self.id}"
 
 
 @receiver(post_save, sender=CustomUser)
