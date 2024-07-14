@@ -1,19 +1,13 @@
-from django.urls import path
-from api.views import CustomUserCreateView, PostViewSet
+from django.urls import path, include
+from api.views import CustomUserCreateView, PostViewSet, VehicleViewSet, ItemViewSet
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'items', ItemViewSet)
+router.register(r'vehicles', VehicleViewSet)
+router.register(r'posts', PostViewSet, basename='posts')
 
 urlpatterns = [
     path('users/', CustomUserCreateView.as_view(), name='user-create'),
-    path('posts/', PostViewSet.as_view({
-        'get': 'list',
-        'post': 'create',
-        'put': 'update',
-        'patch': 'partial_update',
-        'delete': 'destroy'
-    }), name='post-list-create'),
-    path('posts/<uuid:pk>/', PostViewSet.as_view({
-        'get': 'retrieve',
-        'put': 'update',
-        'patch': 'partial_update',
-        'delete': 'destroy'
-    }), name='post-detail'),
+    path('', include(router.urls))
 ]

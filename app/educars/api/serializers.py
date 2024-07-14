@@ -1,11 +1,14 @@
 from rest_framework import serializers
 from src.user.models import CustomUser, Address
 from src.post.models import Post, PostImage
+from src.vehicle.models import Vehicle, Item
+
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = ['zipcode', 'district', 'city', 'street', 'uf', 'complement']
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
@@ -28,10 +31,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.refresh_from_db()
         return user
 
+
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostImage
         fields = ['id', 'image']
+
 
 class PostSerializer(serializers.ModelSerializer):
     post_images = PostImageSerializer(many=True, read_only=True)
@@ -54,3 +59,28 @@ class PostSerializer(serializers.ModelSerializer):
         for image in image_uploads:
             PostImage.objects.create(post=post, image=image)
         return post
+
+
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = ['id', 'item']
+
+
+class VehicleSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(many=True)
+
+    class Meta:
+        model = Vehicle
+        fields = [
+            'id', 'car_name', 'car_model', 'brand', 'color', 'year',
+            'fuel_type', 'transmission', 'protected', 'car_body', 'km', 'items'
+        ]
+
+    def create(self, validated_data):
+        items_data = validated_data.pop('items')
+        vehicle = Vehicle.objects.create(**validated_data)
+        for item_data in items_data:
+            item, created = Item.objects.get_or_create(**item_data)
+            vehicle.items.add(item)
+        return vehicle

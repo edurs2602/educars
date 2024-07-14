@@ -41,10 +41,10 @@ def send_welcome_email(user_email, first_name, last_name, date_joined):
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[receiver_email],
             html_message=convert_to_html_content,
-            fail_silently=False  # Change to False to handle exceptions
+            fail_silently=False
         )
 
-        return sent > 0  # Retorna True se pelo menos um email foi enviado com sucesso
+        return sent > 0
 
     except BadHeaderError:
         logger.error("Invalid header found.")

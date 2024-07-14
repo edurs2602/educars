@@ -48,9 +48,7 @@ class Address(models.Model):
     zipcode = models.CharField(_("zipcode"), max_length=10)
     district = models.CharField(_("bairro"), max_length=100)
     city = models.CharField(_("cidade"), max_length=100)
-    street = models.CharField(_("logradouro"), max_length=100)
     uf = models.CharField(_("uf"), max_length=2)
-    complement = models.CharField(_("complemento"), max_length=100, blank=True)
 
     @classmethod
     def create_from_cep(cls, user, cep):
